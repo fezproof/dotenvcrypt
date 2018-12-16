@@ -1,6 +1,6 @@
 {
-  "name": "dotenvencrypt",
-  "version": "0.3.2",
+  "name": "dotenvcrypt",
+  "version": "0.1.0",
   "description": "Encrypts .env file so that it can be used with git",
   "license": "MIT",
   "repository": {
@@ -9,7 +9,7 @@
   },
   "main": "index.js",
   "bin": {
-    "dotenvencrypt": "./bin/cli"
+    "dotenvcrypt": "./bin/cli"
   },
   "keywords": [
     "dotenvcrypt",
