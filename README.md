@@ -17,7 +17,7 @@ This will generate your .env.enc file to push to version control
 ### Step 2
 Add this snippet to your code
 ```
-if (process.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
   const { decrypt } = require('dotenvencrypt');
 
   decrypt(process.env.ENV_PASS);
