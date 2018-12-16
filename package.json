@@ -9,7 +9,7 @@
   },
   "main": "index.js",
   "bin": {
-    "dotenvencrypt": "./bin/dotenvencrypt"
+    "dotenvencrypt": "./bin/cli"
   },
   "keywords": [
     "dotenv",
