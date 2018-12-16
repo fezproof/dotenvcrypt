@@ -3,8 +3,14 @@
   "version": "0.2.0",
   "description": "Encrypts .env file so that it can be used with git",
   "license": "MIT",
-  "repository": "fezproof/dotenv",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:fezproof/dotenvencrypt.git"
+  },
   "main": "index.js",
+  "bin": {
+    "dotenvencrypt": "./bin/dotenvencrypt"
+  },
   "keywords": [
     "dotenv",
     "encrypt",
@@ -12,5 +18,13 @@
     "npm",
     "package",
     "fezproof"
-  ]
+  ],
+  "devDependencies": {
+    "eslint": "^5.10.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  },
+  "dependencies": {
+    "minimist": "^1.2.0"
+  }
 }

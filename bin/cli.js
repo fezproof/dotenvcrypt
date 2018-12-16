@@ -1,0 +1,60 @@
+#!/usr/bin/env node
+/* eslint-disable no-console */
+
+/**
+ * To encrypt a file:
+ * -e <fileToEncrypt> <password>
+ * To decrype a file:
+ * -d <fileToDecrypt> <password>
+ */
+
+const args = require('minimist')(process.argv.slice(2), {
+  boolean: ['e', 'd', 'h'],
+  alias: {
+    e: 'encrypt',
+    d: 'decrypt',
+    h: 'help',
+  },
+});
+
+const { encrypt, decrypt } = require('../index');
+
+const password = args._[0];
+
+/**
+ * @param   {String}    error       optional error message to print before printing the help syntax
+ */
+function printHelp(error) {
+  if (error) {
+    console.log('Error: ', error);
+  }
+  console.log(`
+Arguments:
+  -e, --encrypt   to encrypt the .env file into .env.enc (default operation; can be ommited)
+  -d, --decrypt   to decrypt a .env.enc file into .env
+  -h, --help      print this help
+Usage:
+  $ dotenvenc [-e|-d] <password>
+Examples:
+  - To encrypt .env into .env.enc
+      $ dotenvenc -e myEncryptionPassword
+      or equivalently ommiting the '-e' flag (default)
+      $ dotenvenc myEncryptionPassword
+  - To decrypt .env.enc into the original .env
+      $ dotenvenc -d myEncryptionPassword
+`);
+  process.exit(0);
+}
+
+
+if (args.h) {
+  printHelp();
+} else if (!password) {
+  printHelp('missing password');
+} else if (args.d) {
+  // Decrypt .env.enc into .env
+  decrypt(password);
+} else {
+  // Script's default operation is to encrypt the .env into .env.enc
+  encrypt(password);
+}
