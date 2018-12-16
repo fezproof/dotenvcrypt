@@ -1,6 +1,6 @@
 {
   "name": "dotenvencrypt",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Encrypts .env file so that it can be used with git",
   "license": "MIT",
   "repository": {
