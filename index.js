@@ -6,16 +6,7 @@ const IV_LENGTH = 16; // For AES, this is always 16
 const ENCRYPTED_FILE = '.env.enc';
 const DECRYPTED_FILE = '.env';
 
-const LENGTH_ERR = new Error(`
-Password must be a 32 character string
-This is due to encryption safety standards for aes-256
-`);
-
 function encrypt(password) {
-  if (password.length !== 32) {
-    throw LENGTH_ERR;
-  }
-
   const text = fs.readFileSync(DECRYPTED_FILE);
 
   const iv = crypto.randomBytes(IV_LENGTH);
@@ -31,10 +22,6 @@ function encrypt(password) {
 }
 
 function decrypt(password) {
-  if (password.length !== 32) {
-    throw LENGTH_ERR;
-  }
-
   const text = fs.readFileSync(ENCRYPTED_FILE).toString();
 
   const textParts = text.split(':');

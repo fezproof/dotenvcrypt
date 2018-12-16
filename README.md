@@ -7,9 +7,22 @@ npm install dotenvencrypt --save-dev
 ```
 
 ## Usage
+### Step 1
+Generate the encryted env file on the command line with
 ```
-const { decrypt } = require('dotenvencrypt');
-decrypt(process.env.ENV_PASS);
+npx dotenvencrypt MyPasswordString
+```
+This will generate your .env.enc file to push to version control
 
-require('dotenv').config(); // this will read the generated `.env` and populate process.env.* accordingly
+### Step 2
+Add this snippet to your code
+```
+if (process.NODE_ENV === 'production') {
+  const { decrypt } = require('dotenvencrypt');
+
+  decrypt(process.env.ENV_PASS);
+
+  require('dotenv').config(); // this will read the generated `.env` and populate process.env.* accordingly
+
+}
 ```
