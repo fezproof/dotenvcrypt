@@ -20,8 +20,17 @@ Add this snippet to your code
 ```javascript
 const { decrypt } = require('dotenvcrypt');
 
-decrypt(process.env.ENV_PASS);
+decrypt(process.env.YOUR_ENV_KEY);
 
 require('dotenv').config(); // this will read the generated `.env`
 ```
+
 > NOTE: dotenv is a requirement for this package to be of any use
+
+### Step 3
+Share the password with your team
+They then save it inside there personal .bashrc/.bash_profile using
+```bash
+export YOUR_ENV_KEY="MyPasswordString"
+```
+Which can now be accessed from the node instance, which will now decode and read the env variables into the app
