@@ -40,30 +40,27 @@ function encrypt(password) {
 }
 
 function decrypt(password) {
-  const readInitVect = fs.createReadStream(ENCRYPTED_FILE, { end: 15 });
+  const encryptedText = fs.readFileSync(ENCRYPTED_FILE);
 
-  let iv;
-  readInitVect.on('data', (chunk) => {
-    iv = chunk;
-  });
+  const iv = encryptedText.subarray(0, 16);
 
-  readInitVect.on('close', async () => {
-    const key = crypto.scryptSync(password, 'salt', 32);
-    const readStream = fs.createReadStream(ENCRYPTED_FILE, { start: 16 });
-    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+  const key = crypto.scryptSync(password, 'salt', 32);
 
-    readStream.pipe(decipher);
+  const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+  let decrypted = decipher.update(encryptedText);
 
-    decipher.on('data', (data) => {
-      const parsed = dotenv.parse(data);
-      Object.keys(parsed).forEach((element) => {
-        if (!process.env.hasOwnProperty(element)) {
-          process.env[element] = parsed[element];
-        } else {
-          console.log(`[DOTENVCRYPT] "${element}" is already defined in \`process.env\` and will not be overwritten`);
-        }
-      });
-    });
+  decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+  decrypted = decrypted.subarray(16).toString('utf8');
+
+  const parsed = dotenv.parse(decrypted);
+
+  Object.keys(parsed).forEach((element) => {
+    if (!process.env.hasOwnProperty(element)) {
+      process.env[element] = parsed[element];
+    } else {
+      console.log(`[DOTENVCRYPT] "${element}" is already defined in \`process.env\` and will not be overwritten`);
+    }
   });
 }
 
