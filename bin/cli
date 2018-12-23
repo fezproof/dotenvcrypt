@@ -17,7 +17,7 @@ const args = require('minimist')(process.argv.slice(2), {
   },
 });
 
-const { encrypt, decrypt } = require('../index');
+const { encrypt, decryptFile } = require('../index');
 
 const password = args._[0];
 
@@ -53,7 +53,7 @@ if (args.h) {
   printHelp('missing password');
 } else if (args.d) {
   // Decrypt .env.enc into .env
-  decrypt(password);
+  decryptFile(password);
 } else {
   // Script's default operation is to encrypt the .env into .env.enc
   encrypt(password);

@@ -1,12 +1,12 @@
 const crypto = require('crypto');
 const fs = require('fs');
+const dotenv = require('dotenv');
+const { Transform } = require('stream');
 
 const IV_LENGTH = 16; // For AES, this is always 16
 
 const ENCRYPTED_FILE = '.env.enc';
 const DECRYPTED_FILE = '.env';
-
-const { Transform } = require('stream');
 
 class AppendInitVect extends Transform {
   constructor(initVect, opts) {
@@ -47,16 +47,42 @@ function decrypt(password) {
     iv = chunk;
   });
 
-  readInitVect.on('close', () => {
+  readInitVect.on('close', async () => {
+    const key = crypto.scryptSync(password, 'salt', 32);
+    const readStream = fs.createReadStream(ENCRYPTED_FILE, { start: 16 });
+    const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
+
+    readStream.pipe(decipher);
+
+    decipher.on('data', (data) => {
+      const parsed = dotenv.parse(data);
+      Object.keys(parsed).forEach((element) => {
+        if (!process.env.hasOwnProperty(element)) {
+          process.env[element] = parsed[element];
+        } else {
+          console.log(`[DOTENVCRYPT] "${element}" is already defined in \`process.env\` and will not be overwritten`);
+        }
+      });
+    });
+  });
+}
+
+function decryptFile(password) {
+  const readInitVect = fs.createReadStream(ENCRYPTED_FILE, { end: 15 });
+
+  let iv;
+  readInitVect.on('data', (chunk) => {
+    iv = chunk;
+  });
+
+  readInitVect.on('close', async () => {
     const key = crypto.scryptSync(password, 'salt', 32);
     const readStream = fs.createReadStream(ENCRYPTED_FILE, { start: 16 });
     const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
     const writeStream = fs.createWriteStream(DECRYPTED_FILE);
 
-    readStream
-      .pipe(decipher)
-      .pipe(writeStream);
+    readStream.pipe(decipher).pipe(writeStream);
   });
 }
 
-module.exports = { decrypt, encrypt };
+module.exports = { decrypt, encrypt, decryptFile };
