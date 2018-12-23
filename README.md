@@ -1,3 +1,5 @@
+[![](https://img.shields.io/npm/v/npm.svg)](https://www.npmjs.com/package/dotenvcrypt)
+
 # dotenvcrypt
 A package designed to help teams use secret enviroment variables together, without the security risk
 
@@ -21,11 +23,9 @@ Add this snippet to your code
 const { decrypt } = require('dotenvcrypt');
 
 decrypt(process.env.YOUR_ENV_KEY);
-
-require('dotenv').config(); // this will read the generated `.env`
 ```
 
-> NOTE: dotenv is a requirement for this package to be of any use
+> NOTE: dotenv is not required for the variables to be loaded
 
 ### Step 3
 Share the password with your team
